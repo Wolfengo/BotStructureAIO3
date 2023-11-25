@@ -1,3 +1,9 @@
+import asyncio
+from ctypes import Union
+
+from aiogram import BaseMiddleware, types
+from aiogram.dispatcher.event.bases import CancelHandler
+from aiogram.exceptions import TelegramBadRequest
 from aiogram.methods import SendMessage, EditMessageText
 
 from scripts.bot import bot
@@ -24,11 +30,14 @@ class SenderMessage:
         await bot(SendMessage(chat_id=self.user_in, text=text, reply_markup=button))
 
     async def update_message(self, text=None, button=None):
-        await bot(EditMessageText(
-            chat_id=self.user_in,
-            message_id=self.message_id,
-            text=self.text_in if text is None else text,
-            reply_markup=button))
+        try:
+            await bot(EditMessageText(
+                chat_id=self.user_in,
+                message_id=self.message_id,
+                text=self.text_in if text is None else text,
+                reply_markup=button))
+        except TelegramBadRequest:
+            return
 
     async def answer_update(self, text_out, text_in=None, button_in=None, button_out=None):
         await bot(EditMessageText(

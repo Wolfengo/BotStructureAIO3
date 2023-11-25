@@ -1,9 +1,11 @@
 from aiogram import Bot, Dispatcher
 import asyncio
 
+from aiogram.fsm import middleware
 from aiogram.fsm.storage.redis import RedisStorage
 
 from scripts.config import BOT_TOKEN
+from scripts.middelewares.cortage import AlbumMiddleware
 from scripts.services.sql import Changer, Database
 
 from scripts.config import db_host, db_port, db_password_postgres, db_name, db_user, db_password
@@ -11,6 +13,7 @@ from scripts.config import db_host, db_port, db_password_postgres, db_name, db_u
 bot = Bot(BOT_TOKEN)
 storage = RedisStorage.from_url('redis://localhost:6379/0')
 dp = Dispatcher()
+dp.message.middleware(AlbumMiddleware())
 
 
 async def main():

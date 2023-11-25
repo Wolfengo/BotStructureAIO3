@@ -14,15 +14,15 @@ class ThrottlingMiddleware(BaseMiddleware):
         user = f'user {event.from_user.id}'
         check_user = await self.storage.redis.get(name=user)
 
-        if check_user:
-            if int(check_user.decode()) == 1:
-                await self.storage.redis.set(name=user, value=0, ex=10)
-                return await event.answer('Спам-трекер заблокировал вас на 10 секунд'
-                                          if 'ru' in language else 'Spam blocked. Wait a 10 sec')
-            return
-        await self.storage.redis.set(name=user, value=1, ex=10)
+        if not event.media_group_id:
+            if '/' in event.text:
+                if check_user:
+                    if int(check_user.decode()) == 1:
+                        await self.storage.redis.set(name=user, value=0, ex=10)
+                        return await event.answer('Спам-трекер заблокировал вас на 10 секунд'
+                                                  if 'ru' in language else 'Spam blocked. Wait a 10 sec')
+                    return
+                await self.storage.redis.set(name=user, value=1, ex=10)
 
         return await handler(event, data)
-
-
 

@@ -1,7 +1,7 @@
 from aiogram import types, F
+from aiogram.types import Message, InputMediaPhoto, InputMedia, ContentType as CT
 from aiogram.filters.command import Command
 from aiogram.fsm.context import FSMContext
-from aiogram.fsm.storage.redis import RedisStorage
 
 from scripts.bot import bot, dp, storage
 from scripts.handlers.messager import SenderMessage
@@ -10,8 +10,26 @@ from scripts.middelewares.throttling import ThrottlingMiddleware
 from scripts.states.user import States
 
 
-async def func_to_register(message: types.Message):
-    await message.answer('Func', reply_markup=await inline())
+# Пример работы AlbumMiddleware с кортежами
+async def echo(message: Message, album: list[Message]):
+    media_group = []
+    for msg in album:
+        if msg.photo:
+            file_id = msg.photo[-1].file_id
+            media_group.append(InputMediaPhoto(media=file_id))
+        else:
+            obj_dict = msg.dict()
+            file_id = obj_dict[msg.content_type]['file_id']
+            media_group.append(InputMedia(media=file_id))
+
+    await message.answer_media_group(media_group)
+
+
+async def call(message: types.Message, state: FSMContext):
+    send = SenderMessage(message)
+    await send.update_message('novoe')
+    await state.set_state(States.album_middleware)
+    await state.update_data(id=message.message.message_id)
 
 
 async def test(message: types.Message, state: FSMContext):
@@ -20,6 +38,7 @@ async def test(message: types.Message, state: FSMContext):
     await send.notification('NOTIFICATION')
     await state.set_state(States.name)
     await state.update_data(id=message.message.message_id)
+
     # response_text = str(message)
     # max_length = 4096
     #
@@ -41,6 +60,8 @@ async def test2(message: types.Message, state: FSMContext):
 
 async def handler_registration():
     dp.message.middleware.register(ThrottlingMiddleware(storage=storage))
-    dp.message.register(func_to_register, Command("start"))
+    dp.message.register(echo, Command("start"))
+    dp.message.register(echo, F.content_type.in_([CT.PHOTO, CT.VIDEO, CT.AUDIO, CT.DOCUMENT]))
     dp.callback_query.register(test, F.data.startswith('test1'))
+    dp.callback_query.register(call, F.data.startswith('test2'))
     dp.message.register(test2, States.name)

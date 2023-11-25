@@ -8,5 +8,5 @@ from scripts.bot import dp
 
 class States(StatesGroup):
     name = State()
-
+    album_middleware = State()
 
