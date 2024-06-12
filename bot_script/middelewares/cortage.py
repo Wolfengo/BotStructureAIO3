@@ -93,7 +93,6 @@ async def echo(message: Message, album: list[Message]):
                     del data['_is_last']
         else:
             data["album"] = [message]
-            print(data)
         try:
             return await handler(message, data)
         except TypeError:

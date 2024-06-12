@@ -5,6 +5,7 @@ from aiogram.fsm.context import FSMContext
 
 from bot_script.bot import bot, dp, storage
 from bot_script.handlers.messager import SenderMessage
+from bot_script.keyboards.calendar_bot import calendar_builder
 from bot_script.keyboards.user_inline_button import inline
 from bot_script.middelewares.throttling import ThrottlingMiddleware
 from bot_script.states.user import States
@@ -12,17 +13,20 @@ from bot_script.states.user import States
 
 # Пример работы AlbumMiddleware с кортежами
 async def echo(message: Message, album: list[Message]):
-    media_group = []
-    for msg in album:
-        if msg.photo:
-            file_id = msg.photo[-1].file_id
-            media_group.append(InputMediaPhoto(media=file_id))
-        else:
-            obj_dict = msg.dict()
-            file_id = obj_dict[msg.content_type]['file_id']
-            media_group.append(InputMedia(media=file_id))
-
-    await message.answer_media_group(media_group)
+    await bot.send_message(chat_id=message.from_user.id,
+                           text='123',
+                           reply_markup=await calendar_builder())
+    # media_group = []
+    # for msg in album:
+    #     if msg.photo:
+    #         file_id = msg.photo[-1].file_id
+    #         media_group.append(InputMediaPhoto(media=file_id))
+    #     else:
+    #         obj_dict = msg.dict()
+    #         file_id = obj_dict[msg.content_type]['file_id']
+    #         media_group.append(InputMedia(media=file_id))
+    #
+    # await message.answer_media_group(media_group)
 
 
 async def call(message: types.Message, state: FSMContext):
