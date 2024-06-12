@@ -23,11 +23,8 @@ class SenderMessage:
         except Exception as e:
             print(f"Произошла ошибка получения данных message_id и text: {e}")
 
-    async def new_message(self, text, button=None):
-        await bot(SendMessage(chat_id=self.user_in, text=text, reply_markup=button))
-
-    async def new_message_other_user(self, text, button=None):
-        await bot(SendMessage(chat_id=self.user_in, text=text, reply_markup=button))
+    async def new_message(self, text, user_id=None, button=None):
+        await bot(SendMessage(chat_id=self.user_in if user_id is None else user_id, text=text, reply_markup=button))
 
     async def update_message(self, text=None, button=None):
         try:
