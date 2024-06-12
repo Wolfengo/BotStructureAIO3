@@ -6,7 +6,7 @@ from aiogram.dispatcher.event.bases import CancelHandler
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.methods import SendMessage, EditMessageText
 
-from scripts.bot import bot
+from bot_script.bot import bot
 
 
 class SenderMessage:

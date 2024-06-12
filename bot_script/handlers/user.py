@@ -3,11 +3,11 @@ from aiogram.types import Message, InputMediaPhoto, InputMedia, ContentType as C
 from aiogram.filters.command import Command
 from aiogram.fsm.context import FSMContext
 
-from scripts.bot import bot, dp, storage
-from scripts.handlers.messager import SenderMessage
-from scripts.keyboards.user_inline_button import inline
-from scripts.middelewares.throttling import ThrottlingMiddleware
-from scripts.states.user import States
+from bot_script.bot import bot, dp, storage
+from bot_script.handlers.messager import SenderMessage
+from bot_script.keyboards.user_inline_button import inline
+from bot_script.middelewares.throttling import ThrottlingMiddleware
+from bot_script.states.user import States
 
 
 # Пример работы AlbumMiddleware с кортежами
@@ -47,7 +47,7 @@ async def test(message: types.Message, state: FSMContext):
     #     text_chunk = response_text[:max_length]
     #     response_text = response_text[max_length:]
     #
-    #     await bot(SendMessage(chat_id=message.from_user.id, text=text_chunk))
+    #     await bot_script(SendMessage(chat_id=message.from_user.id, text=text_chunk))
 
 
 async def test2(message: types.Message, state: FSMContext):

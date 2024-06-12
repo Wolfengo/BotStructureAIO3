@@ -156,4 +156,4 @@ cython_debug/
 test.py
 *.log
 config.py
-scripts/config.py
+bot_script/config.py
